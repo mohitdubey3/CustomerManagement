@@ -1,0 +1,177 @@
+﻿@model IEnumerable<Customer.App_Data.CustomerInfo>
+@using System.Linq
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/dataTables.bootstrap.min.css" integrity="sha512-BMbq2It2D3J17/C7aRklzOODG1IQ3+MHw3ifzBHMBwGO/0yUqYmsStgBjI0z5EYlaDEFnvYV7gNYdD3vFLRKsA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+@{
+    ViewBag.Title = "Customer Information";
+}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Customer Information</h2>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCustomerModal">Add</button>
+</div>
+
+@if (TempData["SMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (TempData["EMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["EMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<table id="cTable" class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th style="width: 200px;">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var customer in Model)
+            {
+                var editModalId = "editCustomerModal-" + customer.Id;
+                var deleteModalId = "deleteCustomerModal-" + customer.Id;
+                <tr>
+                    <td>@customer.Name</td>
+                    <td>@customer.Phone</td>
+                    <td>@customer.Email</td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#@editModalId">Edit</button>
+                        <button type="button" class="btn btn-sm btn-outline-danger ms-2" data-bs-toggle="modal" data-bs-target="#@deleteModalId">Delete</button>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="4" class="text-center text-muted py-4">No customers found.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (Model != null)
+{
+    foreach (var customer in Model)
+    {
+        var editModalId = "editCustomerModal-" + customer.Id;
+        var deleteModalId = "deleteCustomerModal-" + customer.Id;
+        var editLabelId = editModalId + "-label";
+        var deleteLabelId = deleteModalId + "-label";
+        var nameInputId = "name-" + customer.Id;
+        var phoneInputId = "phone-" + customer.Id;
+        var emailInputId = "email-" + customer.Id;
+
+        <div class="modal fade" id="@editModalId" tabindex="-1" aria-labelledby="@editLabelId" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    @using (Html.BeginForm("Update", "Customer", new { id = customer.Id }, FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="@editLabelId">Edit Customer</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="form-label" for="@nameInputId">Name</label>
+                                <input class="form-control" id="@nameInputId" name="Name" maxlength="100" value="@customer.Name" required />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="@phoneInputId">Phone</label>
+                                <input class="form-control" id="@phoneInputId" name="Phone" maxlength="30" value="@customer.Phone" required />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="@emailInputId">Email</label>
+                                <input type="email" class="form-control" id="@emailInputId" name="Email" maxlength="200" value="@customer.Email" required />
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-success">Save</button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="@deleteModalId" tabindex="-1" aria-labelledby="@deleteLabelId" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    @using (Html.BeginForm("Delete", "Customer", new { id = customer.Id }, FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="@deleteLabelId">Delete Confirmation</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to delete <strong>@customer.Name</strong>?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+}
+
+<div class="modal fade" id="addCustomerModal" tabindex="-1" aria-labelledby="addCustomerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            @using (Html.BeginForm("Create", "Customer", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addCustomerModalLabel">Add Customer</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label" for="name-new">Name</label>
+                        <input class="form-control" id="name-new" name="Name" maxlength="100" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="phone-new">Phone</label>
+                        <input class="form-control" id="phone-new" name="Phone" maxlength="30" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="email-new">Email</label>
+                        <input type="email" class="form-control" id="email-new" name="Email" maxlength="200" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Save</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#cTable').DataTable({
+            paging: true,
+            searching: true,
+            ordering: true,
+            lengthChange: true,
+            pageLength: 11,
+        });
+    });
+</script>

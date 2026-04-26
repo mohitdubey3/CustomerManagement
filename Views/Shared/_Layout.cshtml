@@ -1,0 +1,95 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <style>
+        .dataTables_wrapper {
+            padding: 20px;
+            background-color: #5B9FFC;
+        }
+
+        .dt-buttons {
+            margin-bottom: 20px;
+        }
+
+        .dt-button {
+            background-color: blue;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            width: 80px;
+        }
+
+        .dataTables_filter {
+            margin-bottom: 20px;
+        }
+
+            .dataTables_filter label {
+                font-weight: bold;
+            }
+
+            .dataTables_filter input {
+                font-weight: bold;
+                border-radius: 5px;
+                margin-left: 10px;
+            }
+
+        #cTable_previous {
+            padding: 10px;
+            background-color: red;
+            color: white;
+            font-weight: bold;
+            margin: 20px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        #cTable_next {
+            padding: 10px;
+            background-color: green;
+            color: white;
+            font-weight: bold;
+            margin: 20px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        .dataTables_info {
+            padding: 10px;
+            margin: 10px;
+            font-weight: bold;
+        }
+
+        .dataTables_paginate span a {
+            color: white;
+            margin: 5px;
+            cursor: pointer;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.8/css/bootstrap.min.css" integrity="sha512-2bBQCjcnw658Lho4nlXJcc6WkV/UxpE/sAokbXPxQNGqmNdQrWqtw26Ns9kFF/yG792pKR1Sx8/Y1Lf1XN4GKA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                @Html.ActionLink("Customer", "Index", "Customer", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="container body-content">
+        @RenderBody()
+    </div>
+
+    <script src="~/Content/Site.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.8/js/bootstrap.bundle.min.js" integrity="sha512-HvOjJrdwNpDbkGJIG2ZNqDlVqMo77qbs4Me4cah0HoDrfhrbA+8SBlZn1KrvAQw7cILLPFJvdwIgphzQmMm+Pw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</body>
+</html>
